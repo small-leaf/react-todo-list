@@ -1,18 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import useInput from "./useInput";
 
 const writeTodosToLocalStorage = (todos) => {
   window.localStorage.setItem("todos", JSON.stringify(todos));
 };
 
-let id = 1;
 const useTodos = () => {
+  const id = useRef(1);
   const { value, setValue, handleInputChange } = useInput();
+  const [filter, setFilter] = useState("");
+
   const [todos, setTodos] = useState(() => {
     let todoData = window.localStorage.getItem("todos") || "";
-    if (todoData) {
-      todoData = JSON.parse(todoData);
-      id = todoData[0].id + 1;
+    todoData = JSON.parse(todoData);
+    if (todoData && todoData[0] !== undefined) {
+      id.current = todoData[0].id + 1;
     } else {
       todoData = [];
     }
@@ -22,6 +24,11 @@ const useTodos = () => {
   useEffect(() => {
     writeTodosToLocalStorage(todos);
   }, [todos]);
+
+  const showAllTodo = () => setFilter("");
+  const showDoneTodo = () => setFilter("done");
+  const showUnfinishTodo = () => setFilter("unfinish");
+  const clearAll = () => setTodos([]);
 
   const handleCheckBoxChange = (id) => {
     return () => {
@@ -41,14 +48,14 @@ const useTodos = () => {
     if (value.trim() !== "") {
       setTodos([
         {
-          id,
+          id: id.current,
           content: value,
           isDone: false,
         },
         ...todos,
       ]);
       setValue("");
-      id++;
+      id.current++;
     }
   };
 
@@ -74,6 +81,12 @@ const useTodos = () => {
     handleButtonClick,
     handleButtonKeyDown,
     handleDeleteTodo,
+    filter,
+    setFilter,
+    showAllTodo,
+    showDoneTodo,
+    showUnfinishTodo,
+    clearAll,
   };
 };
 

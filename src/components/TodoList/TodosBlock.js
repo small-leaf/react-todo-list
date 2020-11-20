@@ -1,7 +1,5 @@
 import styled from "styled-components";
-//import TodoFilter from "./TodoFilter";
 import useTodos from "./useTodos";
-import useFilter from "./useFilter";
 
 const TodoInput = styled.section`
   padding: 20px;
@@ -142,15 +140,12 @@ const TodosBlock = () => {
     handleButtonClick,
     handleButtonKeyDown,
     handleDeleteTodo,
-  } = useTodos();
-
-  const {
     filter,
     showAllTodo,
     showDoneTodo,
     showUnfinishTodo,
     clearAll,
-  } = useFilter();
+  } = useTodos();
 
   return (
     <>
